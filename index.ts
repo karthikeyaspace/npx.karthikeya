@@ -9,6 +9,20 @@ const octokit = new Octokit();
 
 const n = 7;
 
+const fetchTotalCommits = async () => {
+  try {
+    const res = await octokit.search
+      .commits({
+        q: `author:${username}`,
+      })
+      .then((res) => res.data.total_count);
+
+    console.log(chalk.greenBright(`${chalk.red(res)} Total contributions`));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const printme = async (): Promise<void> => {
   try {
     console.log("\n");
@@ -31,7 +45,10 @@ const printme = async (): Promise<void> => {
 
     console.log(chalk.bold("\n📊 gitHub stats:"));
     console.log(chalk.greenBright("@" + user.login));
-    console.log(chalk.greenBright(user.public_repos + " repositories"));
+    console.log(
+      chalk.red(user.public_repos) + chalk.greenBright(" repositories")
+    );
+    await fetchTotalCommits();
 
     console.log(chalk.bold("\n📜 my recent projects:"));
 
